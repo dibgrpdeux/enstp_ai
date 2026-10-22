@@ -1,150 +1,756 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" dir="ltr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guide de Survie ENSTP - Digital Student Platform</title>
+  
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Google Fonts: Poppins & Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- GSAP for Smooth Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            accent: {
+              pink: '#ec4899',
+              amber: '#f59e0b',
+              emerald: '#10b981',
+              cyan: '#06b6d4',
+              purple: '#a855f7'
+            }
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
 
-<title>Guide d'étudiants d'ENSTP</title>
-
-<style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
-.welcome {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    padding: 30px;
-
-    background-image:
-        linear-gradient(rgba(0, 30, 60, 0.60), rgba(0, 30, 60, 0.60)),
-        url("https://raw.githubusercontent.com/kheirabenalia-png/enstp_ai/main/592022075563311913_120.jpg");
-
-    background-size: cover;
-    background-position: center;
-}
-
-.content {
-    max-width: 850px;
-}
-
-.logo {
-    font-size: 60px;
-}
-
-h1 {
-    font-size: 50px;
-    margin: 10px 0;
-}
-
-h2 {
-    font-size: 28px;
-    font-weight: normal;
-}
-
-p {
-    font-size: 19px;
-    line-height: 1.6;
-}
-
-button {
-    margin-top: 25px;
-    padding: 15px 35px;
-    border: none;
-    border-radius: 30px;
-    background: white;
-    color: #07558c;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.photos {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.photos img {
-    width: 140px;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 2px solid white;
-}
-
-@media (max-width: 600px) {
-    h1 {
-        font-size: 38px;
+  <style>
+    body {
+      font-family: 'Poppins', 'Cairo', sans-serif;
+      background: #f8fafc;
+      overflow-x: hidden;
+      color: #0f172a;
     }
 
-    h2 {
-        font-size: 22px;
+    /* Ambient animated mesh background */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15), transparent 40%),
+                  radial-gradient(circle at 85% 85%, rgba(236, 72, 153, 0.12), transparent 45%),
+                  radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.12), transparent 50%),
+                  linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+      animation: pulseBg 12s ease-in-out infinite alternate;
     }
 
-    p {
-        font-size: 16px;
+    @keyframes pulseBg {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(30deg); }
     }
 
-    .photos img {
-        width: 90px;
-        height: 60px;
+    /* Glassmorphism containers */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05),
+                  0 0 20px rgba(99, 102, 241, 0.08);
     }
-}
-</style>
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    /* 3D Circular Orbit Stage */
+    .orbit-stage {
+      perspective: 1200px;
+      position: relative;
+      width: 100%;
+      height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .orbit-ring {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* 3D Circle Node Cards */
+    .orbit-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 140px;
+      height: 140px;
+      margin-top: -70px;
+      margin-left: -70px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #f1f5f9);
+      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2),
+                  inset 0 2px 4px rgba(255, 255, 255, 0.9),
+                  0 0 0 4px rgba(255, 255, 255, 0.6);
+      transition: all 0.5s ease;
+      transform-style: preserve-3d;
+    }
+
+    .orbit-card:hover {
+      transform: scale(1.15) translateZ(30px) !important;
+      box-shadow: 0 25px 50px rgba(99, 102, 241, 0.35),
+                  0 0 30px rgba(236, 72, 153, 0.4);
+    }
+
+    .orbit-card.active {
+      box-shadow: 0 0 0 6px #6366f1, 0 20px 45px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Icon 3D Glow */
+    .icon-3d {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(2px 4px 6px rgba(79, 70, 229, 0.3));
+    }
+
+    /* Tab Switcher Effect */
+    .page-section {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .page-section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Custom Floating Glow Buttons */
+    .glow-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .glow-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.4), transparent);
+      transform: rotate(45deg) translateY(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .glow-btn:hover::after {
+      transform: rotate(45deg) translateY(100%);
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
 </head>
+<body class="min-h-screen flex flex-col justify-between">
 
-<body>
+  <!-- Ambient Light Mesh Background -->
+  <div class="ambient-bg"></div>
 
-<section class="welcome">
+  <!-- HEADER & NAVIGATION BANNER -->
+  <header class="sticky top-0 z-50 glass-nav px-4 lg:px-8 py-3.5 shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-accent-pink flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-500/30">
+          E
+        </div>
+        <div>
+          <h1 class="font-bold text-gray-900 tracking-tight text-lg leading-tight">ENSTP <span class="text-brand-600">Survival Guide</span></h1>
+          <p class="text-xs text-gray-500 font-cairo">دليل الطالب الذكي - المدرسة الوطنية العليا للأشغال العمومية</p>
+        </div>
+      </div>
 
-<div class="content">
+      <!-- Navigation Tabs (2 Pages) -->
+      <nav class="flex items-center gap-2 bg-gray-100/80 p-1.5 rounded-full border border-gray-200/80 shadow-inner">
+        <button id="nav-home" onclick="switchPage('home')" class="px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 bg-white text-brand-600 shadow-md flex items-center gap-2">
+          <i class="fa-solid fa-house"></i>
+          <span>1. Accueil / Présentation</span>
+        </button>
+        <button id="nav-classes" onclick="switchPage('classes')" class="px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 text-gray-600 hover:text-brand-600 flex items-center gap-2">
+          <i class="fa-solid fa-circle-nodes"></i>
+          <span>2. Classes & Rubriques (3D Orbit)</span>
+        </button>
+      </nav>
 
-<div class="logo">🎓</div>
+      <!-- Quick Action: Manage Classes -->
+      <div class="hidden md:flex items-center gap-3">
+        <button onclick="openManageModal()" class="glow-btn px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-accent-purple text-white text-xs font-bold flex items-center gap-2 shadow-md hover:shadow-indigo-500/25">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Gérer les Classes</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-<h1>ENSTP</h1>
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 flex-grow w-full">
 
-<h2>Guide d'étudiants d'ENSTP</h2>
+    <!-- ================= PAGE 1: ACCUEIL & PRÉSENTATION ================= -->
+    <section id="page-home" class="page-section active space-y-12">
+      
+      <!-- Hero Presentation Banner -->
+      <div class="glass-card rounded-3xl p-8 lg:p-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/80">
+        <div class="space-y-6 max-w-2xl z-10">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 text-brand-600 border border-brand-100 text-xs font-bold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
+            Projet Entrepreneuriat - ENSTP Kouba
+          </div>
+          
+          <h2 class="text-3xl lg:text-5xl font-black text-gray-900 leading-tight">
+            Bienvenue dans le <br/>
+            <span class="bg-gradient-to-r from-brand-600 via-accent-purple to-accent-pink bg-clip-text text-transparent">Guide de Survie Numérique</span>
+          </h2>
+          
+          <p class="text-gray-600 text-base lg:text-lg leading-relaxed font-cairo">
+            Ce guide interactif a été conçu pour accompagner chaque nouvel étudiant de première année à l'ENSTP. 
+            Découvrez facilement les départements, les salles de cours, les restaurants à proximité, les transports, la vie à la cité universitaire et les activités sportives.
+          </p>
 
-<p>
-Bienvenue dans votre guide étudiant.
-Découvrez l'ENSTP, l'enseignement,
-la vie quotidienne et les services utiles aux étudiants.
-</p>
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <button onclick="switchPage('classes')" class="glow-btn px-6 py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-accent-pink text-white font-bold text-sm shadow-xl shadow-brand-500/30 flex items-center gap-3">
+              <span>Explorer les Rubriques 3D</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <a href="#quick-stats" class="px-6 py-3.5 rounded-2xl bg-white text-gray-700 font-bold text-sm border border-gray-200 hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+              <i class="fa-solid fa-circle-info text-brand-500"></i>
+              <span>En savoir plus</span>
+            </a>
+          </div>
+        </div>
 
-<button onclick="commencer()">
-🚀 Commencer
-</button>
+        <!-- 3D Interactive Card Badge -->
+        <div class="relative w-full lg:w-96 h-80 flex items-center justify-center">
+          <div class="w-72 h-72 rounded-3xl bg-gradient-to-br from-indigo-500/20 via-pink-500/20 to-cyan-500/20 absolute blur-2xl -z-10 animate-pulse"></div>
+          
+          <div class="glass-card w-full h-full rounded-3xl p-6 flex flex-col justify-between border border-white shadow-2xl transform lg:rotate-3 hover:rotate-0 transition-transform duration-500">
+            <div class="flex items-center justify-between">
+              <div class="px-3 py-1 rounded-lg bg-emerald-100 text-emerald-700 font-bold text-xs">
+                Accès Gratuit • 100% Mobile
+              </div>
+              <i class="fa-solid fa-qrcode text-2xl text-brand-600"></i>
+            </div>
+            
+            <div class="text-center my-auto space-y-3">
+              <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-brand-500 to-accent-pink text-white flex items-center justify-center text-3xl shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+              <h3 class="font-bold text-gray-900 text-lg">ENSTP Survival Kit</h3>
+              <p class="text-xs text-gray-500 font-cairo">Zero Dinar • Repérage Instantané • Google Maps</p>
+            </div>
 
-<div class="photos">
+            <div class="p-3 bg-brand-50/80 rounded-2xl border border-brand-100 flex items-center justify-between text-xs font-semibold text-brand-700">
+              <span><i class="fa-solid fa-location-dot mr-1"></i> Kouba, Alger</span>
+              <span>v1.0 Release</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<img src="https://raw.githubusercontent.com/kheirabenalia-png/enstp_ai/main/592022075563311916_120.jpg"
-alt="Étudiants ENSTP">
+      <!-- Quick Highlights Grid -->
+      <div id="quick-stats" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card p-6 rounded-2xl border border-white/80 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-map-location-dot"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-lg">Carte & Orientation</h3>
+          <p class="text-sm text-gray-600">Retrouvez immédiatement vos amphithéâtres, laboratoires, salles de TD et services administratifs sans vous perdre.</p>
+        </div>
 
-<img src="https://raw.githubusercontent.com/kheirabenalia-png/enstp_ai/main/592022075563311918_120.jpg"
-alt="Étudiants ENSTP">
+        <div class="glass-card p-6 rounded-2xl border border-white/80 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-lg">Vie Pratique & Resto</h3>
+          <p class="text-sm text-gray-600">Restauration petit budget, supérettes du soir, papeteries, reprographie et lignes de bus autour de l'ENSTP.</p>
+        </div>
 
-</div>
+        <div class="glass-card p-6 rounded-2xl border border-white/80 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-lg">Entraide & Cité U</h3>
+          <p class="text-sm text-gray-600">Réseau d'entraide entre étudiants (covoiturage inter-wilayas), clubs sportifs (Running Club) et sorties à Alger.</p>
+        </div>
+      </div>
 
-</div>
+    </section>
 
-</section>
 
-<script>
-function commencer() {
-    alert("Bienvenue dans Guide d'étudiants d'ENSTP !");
-}
-</script>
+    <!-- ================= PAGE 2: CLASSES & RUBRIQUES (3D CIRCULAR CAROUSEL) ================= -->
+    <section id="page-classes" class="page-section space-y-8">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-2">
+        <span class="px-3 py-1 rounded-full bg-pink-100 text-pink-600 font-bold text-xs uppercase tracking-wider">
+          Animation Circulaire 3D
+        </span>
+        <h2 class="text-3xl font-black text-gray-900">Les Classes & Rubriques du Guide</h2>
+        <p class="text-sm text-gray-500 font-cairo">
+          Cliquez sur une classe ou utilisez les contrôles pour faire tourner le cercle 3D. 
+          Une rubrique s'avance tandis que la suivante la suit avec fluidité.
+        </p>
+      </div>
 
+      <!-- 3D Circular Orbit Display -->
+      <div class="relative glass-card rounded-3xl p-6 lg:p-10 border border-white overflow-hidden shadow-xl">
+        
+        <!-- Controls Bar -->
+        <div class="flex items-center justify-between mb-4 z-20 relative">
+          <button onclick="rotateOrbit(-1)" class="w-10 h-10 rounded-full bg-white text-gray-700 shadow-md hover:bg-brand-600 hover:text-white transition flex items-center justify-center">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          
+          <div class="flex items-center gap-3">
+            <button onclick="toggleAutoRotate()" id="autorotate-btn" class="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Rotation Automatique: ON
+            </button>
+            <button onclick="openAddClassModal()" class="px-3 py-1.5 rounded-full bg-brand-100 text-brand-700 hover:bg-brand-200 text-xs font-bold">
+              <i class="fa-solid fa-plus mr-1"></i> Ajouter
+            </button>
+          </div>
+
+          <button onclick="rotateOrbit(1)" class="w-10 h-10 rounded-full bg-white text-gray-700 shadow-md hover:bg-brand-600 hover:text-white transition flex items-center justify-center">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- The 3D Stage -->
+        <div class="orbit-stage">
+          <div id="orbit-ring" class="orbit-ring">
+            <!-- Dynamic Cards Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Selected Class Detail Card -->
+        <div id="class-detail-card" class="mt-6 p-6 glass-card rounded-2xl border border-white/90 shadow-lg transition-all duration-500">
+          <!-- Injected detail header and actions -->
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- EDIT / MANAGE MODAL -->
+  <div id="manage-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card bg-white/95 rounded-3xl max-w-xl w-full p-6 lg:p-8 space-y-6 border border-white shadow-2xl relative">
+      <div class="flex items-center justify-between border-b pb-4">
+        <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-brand-600"></i>
+          Gérer / Modifier les Classes du Guide
+        </h3>
+        <button onclick="closeManageModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- List of Classes with Edit Options -->
+      <div id="modal-classes-list" class="max-h-60 overflow-y-auto space-y-3 pr-2">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="border-t pt-4 flex justify-between items-center">
+        <button onclick="openAddClassModal()" class="px-4 py-2 rounded-xl bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-md hover:bg-emerald-600">
+          <i class="fa-solid fa-plus"></i>
+          Ajouter une nouvelle classe
+        </button>
+        <button onclick="closeManageModal()" class="px-5 py-2 rounded-xl bg-gray-200 text-gray-700 font-bold text-xs hover:bg-gray-300">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT CLASS FORM MODAL -->
+  <div id="form-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card bg-white/95 rounded-3xl max-w-md w-full p-6 space-y-4 border border-white shadow-2xl">
+      <h3 id="form-modal-title" class="font-bold text-lg text-gray-900">Ajouter une Classe</h3>
+      
+      <form id="class-form" onsubmit="handleFormSubmit(event)" class="space-y-3">
+        <input type="hidden" id="form-class-id" />
+        
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Titre de la Classe / Rubrique</label>
+          <input type="text" id="form-title" required class="w-full px-3.5 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" placeholder="Ex: Cartographie & Salles" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Icône FontAwesome 3D</label>
+          <input type="text" id="form-icon" required class="w-full px-3.5 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" placeholder="Ex: fa-map-location-dot" />
+          <p class="text-[10px] text-gray-400 mt-1">Exexmples: fa-map-location-dot, fa-utensils, fa-bus, fa-futbol, fa-briefcase</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Description courte</label>
+          <textarea id="form-desc" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" placeholder="Description de la classe..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Couleur d'accentuation</label>
+          <select id="form-color" class="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-sm">
+            <option value="from-indigo-500 to-pink-500">Indigo - Rose</option>
+            <option value="from-emerald-400 to-teal-600">Émeraude - Teinté</option>
+            <option value="from-amber-400 to-orange-500">Ambre - Orange</option>
+            <option value="from-cyan-400 to-blue-600">Cyan - Bleu</option>
+            <option value="from-purple-500 to-pink-600">Violet - Magenta</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeFormModal()" class="px-4 py-2 rounded-xl bg-gray-200 text-gray-700 text-xs font-bold">Annuler</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold shadow-md hover:bg-brand-700">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="glass-nav border-t border-gray-200 mt-12 py-6 px-4 text-center text-xs text-gray-500 font-cairo">
+    <p>© 2026 ENSTP Kouba — Projet Entrepreneuriat "Guide de Survie du Nouvel Étudiant". Zéro Dinar & Open Platform.</p>
+  </footer>
+
+  <!-- SCRIPT & DYNAMIC LOGIC -->
+  <script>
+    // Initial Default Data (Classes de Guide)
+    let guideClasses = [
+      {
+        id: 1,
+        title: "Carte & Orientation",
+        icon: "fa-map-location-dot",
+        desc: "Localisation exacte des bâtiments, amphithéâtres (A, B, C), salles de cours/TD/TP, laboratoires et administration.",
+        color: "from-indigo-500 to-pink-500"
+      },
+      {
+        id: 2,
+        title: "Où Manger ?",
+        icon: "fa-utensils",
+        desc: "Restos pas chers autour de l'ENSTP, cafétérias, pizzerias, supérettes du soir et boulangeries de proximité.",
+        color: "from-amber-400 to-orange-500"
+      },
+      {
+        id: 3,
+        title: "Transports & Bus",
+        icon: "fa-bus",
+        desc: "Arrêts de bus vers Kouba, taxi, itinéraires à pied et correspondances universitaires.",
+        color: "from-cyan-400 to-blue-600"
+      },
+      {
+        id: 4,
+        title: "Impression & Taxis",
+        icon: "fa-print",
+        desc: "Papeteries gratuites/low-cost, tirage de plans techniques, photocopies et fournitures scolaires.",
+        color: "from-purple-500 to-pink-600"
+      },
+      {
+        id: 5,
+        title: "Sport ENSTP",
+        icon: "fa-futbol",
+        desc: "Installations sportives, ENSTP Running Club, tournois de football et basketball entre promotions.",
+        color: "from-emerald-400 to-teal-600"
+      },
+      {
+        id: 6,
+        title: "Cité U & Réseau",
+        icon: "fa-handshake-angle",
+        desc: "Guide de survie pour les internes en cité U et réseau d'entraide entre wilayas (ENSTP Network).",
+        color: "from-rose-500 to-red-500"
+      }
+    ];
+
+    let currentAngle = 0;
+    let activeIndex = 0;
+    let autoRotateInterval = null;
+    let isAutoRotating = true;
+
+    // PAGE SWITCHING (Page 1 vs Page 2)
+    function switchPage(page) {
+      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+      document.getElementById(`page-${page}`).classList.add('active');
+
+      const btnHome = document.getElementById('nav-home');
+      const btnClasses = document.getElementById('nav-classes');
+
+      if (page === 'home') {
+        btnHome.className = "px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 bg-white text-brand-600 shadow-md flex items-center gap-2";
+        btnClasses.className = "px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 text-gray-600 hover:text-brand-600 flex items-center gap-2";
+      } else {
+        btnClasses.className = "px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 bg-white text-brand-600 shadow-md flex items-center gap-2";
+        btnHome.className = "px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 text-gray-600 hover:text-brand-600 flex items-center gap-2";
+        render3DOrbit();
+      }
+    }
+
+    // 3D ORBIT CAROUSEL RENDER
+    function render3DOrbit() {
+      const ring = document.getElementById('orbit-ring');
+      ring.innerHTML = '';
+
+      const total = guideClasses.length;
+      const radius = 170; // Orbit radius in pixels
+
+      guideClasses.forEach((cls, index) => {
+        const angle = (index / total) * (2 * Math.PI);
+        const x = Math.round(radius * Math.cos(angle));
+        const z = Math.round(radius * Math.sin(angle));
+
+        const card = document.createElement('div');
+        card.className = `orbit-card ${index === activeIndex ? 'active' : ''}`;
+        card.style.transform = `translate3d(${x}px, 0px, ${z}px)`;
+        card.onclick = () => selectCard(index);
+
+        card.innerHTML = `
+          <div class="w-12 h-12 rounded-full bg-gradient-to-tr ${cls.color} flex items-center justify-center text-white text-xl shadow-md mb-1">
+            <i class="fa-solid ${cls.icon}"></i>
+          </div>
+          <span class="text-[11px] font-extrabold text-gray-800 text-center px-2 line-clamp-1">${cls.title}</span>
+        `;
+
+        ring.appendChild(card);
+      });
+
+      updateDetailCard();
+    }
+
+    // ROTATE ORBIT
+    function rotateOrbit(direction) {
+      const total = guideClasses.length;
+      activeIndex = (activeIndex + direction + total) % total;
+      
+      const stepAngle = 360 / total;
+      currentAngle += direction * stepAngle;
+      
+      const ring = document.getElementById('orbit-ring');
+      ring.style.transform = `rotateY(${-currentAngle}deg)`;
+
+      // Update active highlight
+      const cards = ring.children;
+      for (let i = 0; i < cards.length; i++) {
+        if (i === activeIndex) cards[i].classList.add('active');
+        else cards[i].classList.remove('active');
+      }
+
+      updateDetailCard();
+    }
+
+    function selectCard(index) {
+      const diff = index - activeIndex;
+      rotateOrbit(diff);
+    }
+
+    function toggleAutoRotate() {
+      const btn = document.getElementById('autorotate-btn');
+      if (isAutoRotating) {
+        clearInterval(autoRotateInterval);
+        isAutoRotating = false;
+        btn.className = "px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 font-bold text-xs flex items-center gap-2";
+        btn.innerHTML = `<span class="w-2 h-2 rounded-full bg-gray-400"></span> Rotation Automatique: OFF`;
+      } else {
+        startAutoRotate();
+        isAutoRotating = true;
+        btn.className = "px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center gap-2";
+        btn.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Rotation Automatique: ON`;
+      }
+    }
+
+    function startAutoRotate() {
+      clearInterval(autoRotateInterval);
+      autoRotateInterval = setInterval(() => {
+        rotateOrbit(1);
+      }, 3200);
+    }
+
+    // UPDATE DETAIL CARD
+    function updateDetailCard() {
+      const cls = guideClasses[activeIndex];
+      const detail = document.getElementById('class-detail-card');
+      
+      detail.innerHTML = `
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr ${cls.color} text-white flex items-center justify-center text-2xl shadow-lg">
+              <i class="fa-solid ${cls.icon}"></i>
+            </div>
+            <div>
+              <span class="text-xs text-brand-600 font-bold">Classe #${cls.id}</span>
+              <h3 class="text-xl font-bold text-gray-900">${cls.title}</h3>
+              <p class="text-xs text-gray-500 font-cairo mt-0.5">${cls.desc}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 w-full md:w-auto">
+            <button onclick="editClass(${cls.id})" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-bold text-xs hover:bg-gray-200 transition">
+              <i class="fa-solid fa-pen mr-1"></i> Modifier
+            </button>
+            <button class="px-5 py-2.5 rounded-xl bg-gradient-to-r ${cls.color} text-white font-bold text-xs shadow-md">
+              Ouvrir le Module <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // MANAGING / MODAL LOGIC
+    function openManageModal() {
+      const list = document.getElementById('modal-classes-list');
+      list.innerHTML = '';
+
+      guideClasses.forEach(cls => {
+        const item = document.createElement('div');
+        item.className = "p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between";
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <i class="fa-solid ${cls.icon} text-brand-600 text-lg"></i>
+            <div>
+              <h4 class="font-bold text-xs text-gray-800">${cls.title}</h4>
+              <p class="text-[10px] text-gray-400 line-clamp-1">${cls.desc}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="editClass(${cls.id})" class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg text-xs"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="deleteClass(${cls.id})" class="p-2 text-red-500 hover:bg-red-50 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+
+      document.getElementById('manage-modal').classList.remove('hidden');
+    }
+
+    function closeManageModal() {
+      document.getElementById('manage-modal').classList.add('hidden');
+    }
+
+    function openAddClassModal() {
+      document.getElementById('form-modal-title').innerText = "Ajouter une nouvelle Classe";
+      document.getElementById('form-class-id').value = "";
+      document.getElementById('class-form').reset();
+      document.getElementById('form-modal').classList.remove('hidden');
+    }
+
+    function closeFormModal() {
+      document.getElementById('form-modal').classList.add('hidden');
+    }
+
+    function editClass(id) {
+      const cls = guideClasses.find(c => c.id === id);
+      if (!cls) return;
+
+      closeManageModal();
+      document.getElementById('form-modal-title').innerText = "Modifier la Classe";
+      document.getElementById('form-class-id').value = cls.id;
+      document.getElementById('form-title').value = cls.title;
+      document.getElementById('form-icon').value = cls.icon;
+      document.getElementById('form-desc').value = cls.desc;
+      document.getElementById('form-color').value = cls.color;
+
+      document.getElementById('form-modal').classList.remove('hidden');
+    }
+
+    function deleteClass(id) {
+      if (guideClasses.length <= 3) {
+        alert("Conservez au moins 3 classes pour maintenir l'effet orbital 3D.");
+        return;
+      }
+      guideClasses = guideClasses.filter(c => c.id !== id);
+      activeIndex = 0;
+      openManageModal();
+      render3DOrbit();
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('form-class-id').value;
+      const title = document.getElementById('form-title').value;
+      const icon = document.getElementById('form-icon').value;
+      const desc = document.getElementById('form-desc').value;
+      const color = document.getElementById('form-color').value;
+
+      if (id) {
+        // Edit existing
+        const index = guideClasses.findIndex(c => c.id == id);
+        if (index !== -1) {
+          guideClasses[index] = { id: parseInt(id), title, icon, desc, color };
+        }
+      } else {
+        // Add new
+        const newId = guideClasses.length ? Math.max(...guideClasses.map(c => c.id)) + 1 : 1;
+        guideClasses.push({ id: newId, title, icon, desc, color });
+      }
+
+      closeFormModal();
+      render3DOrbit();
+    }
+
+    // INIT
+    window.addEventListener('DOMContentLoaded', () => {
+      render3DOrbit();
+      startAutoRotate();
+    });
+  </script>
 </body>
 </html>
